@@ -1,24 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import Axios from "axios";
+import ItemCard from "./component/ItemCard";
+
+import "bootstrap/dist/css/bootstrap.css";
+import "./App.css";
 
 function App() {
+  const [products, setProducts] = useState([]);
+  const [error, setError] = useState([]);
+
+  const getData = async () => {
+    try {
+      let response = await Axios.get("http://localhost:5000/product");
+      let data = response.data.data;
+      setProducts(data);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div className="app">
+      <header className="app-header">
+        <p>Big Mart</p>
       </header>
+      <div className="app-container container">
+        <div className="row">
+          <h1 className="col-12 mb-4">Product List</h1>
+
+          {products.map((product, id) => (
+
+            <ItemCard key={id} product={product} />
+          ))}
+        </div>
+
+      </div>
     </div>
   );
 }
